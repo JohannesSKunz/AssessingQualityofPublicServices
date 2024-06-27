@@ -5,8 +5,8 @@ set maxvar 32767
 set mat 11000
 version 14.1
 
-glo pathdata "/Users/jkun0001/Desktop/24_05_24_replicationpackage_all2/_dodata/" 
-glo pathfold "/Users/jkun0001/Desktop/24_05_24_replicationpackage_all2/" 
+glo pathdata "/Users/jkun0001/Downloads/AssessingQualityofPublicServices-main/_dodata/_finaldata" 
+glo pathfold "/Users/jkun0001/Downloads/AssessingQualityofPublicServices-main/"
 
 glo covars	"numberofdischarges totnumdicarges_other_leaveout beds DischargesforAmbulatoryCareS openingnrhosphrr closingnrhosphrr allagesinpovertypercent medhhincome10Tdollars totalpopestby100T unemprate "
 glo fes 	"_Iyear_2012 _Iyear_2013 _Iyear_2014 _Iyear_2015 _Imeasure_2 _Imeasure_3"
@@ -22,7 +22,7 @@ loc ses2 "cluster(hrr)"
 *-------------------------------------------------------------------------------------------------
 cap log close
 cap log using $pathfold/_logfiles/e8_tab_rob.txt, text replace
-cap use $pathdata/_finaldata/maindata.dta
+cap use $pathdata/maindata.dta
 *-------------------------------------------------------------------------------
 * Estimate
 keep if temp == 1
@@ -181,72 +181,5 @@ esttab reg2* using $pathfold/_tables/e8_tab_rob.tex , append keep(belongschain i
 					  chainXhhi_dis_sys2008_hsa interaction)
 					   
 	
+cap log close 	
 	
-	
-	
-	
-	
-	
-	
-	exit 
-	
-	
-	
-	reg  `suffix'alpha_`method'_inter forprofit belongschain `covars1' `covars3' i.measure if everchanged_ownerstat==0  , `ses'
-	est sto reg`i'_`j'
-	loc j = `j' + 1
-	
-	reg  `suffix'alpha_`method'_inter forprofit  belongschain `covars1' `covars3' i.measure i.hrr if everchanged_ownerstat==0  , `ses'
-	est sto reg`i'_`j'	
-	loc j = `j' + 1		
-
-	loc rname ""	
-	foreach var in hhi_beds hhi_discharge hhi_discharge_sys hhi_discharge_sys2008 {
-		qui su `var'
-		sca mean  = r(mean)
-		reg  `suffix'alpha_`method'_inter forprofit forprofitX`var' `var' belongschain  `covars1' `covars3' i.measure i.hrr if everchanged_ownerstat==0  , `ses'
-		est sto reg`i'_`j'
-		test forprofit + forprofitX`var'* mean=0
-		estadd sca te=_b[forprofit] + _b[forprofitX`var'] * mean
-		estadd sca m=r(p)	
-		loc j = `j' + 1	
-			loc rname "`rname' forprofitX`var' "interaction""
-		}
-	
-* ----------------------	
-loc i = `i' + 1 
-loc j  = 1 
-	reg  `suffix'alpha_`method'_inter   forprofit `covars1' `covars3' i.measure  , `ses'
-	est sto reg`i'_`j'
-	loc j = `j' + 1
-
-	reg  `suffix'alpha_`method'_inter  forprofit `covars1' `covars3' i.measure if everchanged_ownerstat==0  , `ses'
-	est sto reg`i'_`j'
-	loc j = `j' + 1
-	
-	reg  `suffix'alpha_`method'_inter   forprofit `covars1' `covars3' i.measure i.hrr if everchanged_ownerstat==0  , `ses'
-	est sto reg`i'_`j'	
-	loc j = `j' + 1		
-
-	loc rname2 ""	
-	foreach var in hhi_beds hhi_discharge hhi_discharge_sys hhi_discharge_sys2008 {
-		qui su `var'
-		sca mean  = r(mean)
-		reg  `suffix'alpha_`method'_inter  chainX`var' `var' forprofit `covars1' `covars3' i.measure i.hrr if everchanged_ownerstat==0  , `ses'
-		est sto reg`i'_`j'
-		test belongschain + chainX`var'* mean=0
-		estadd sca te=_b[belongschain] + _b[chainX`var'] * mean
-		estadd sca m=r(p)	
-		loc j = `j' + 1	
-			loc rname2 "`rname2' chainX`var' "interaction""
-		}
-	
-	
-loc set  "se  keep(forprofit* interaction) nostar stats(N te m, fmt(%9.0g %9.3f %9.3f)) " // 
-
-loc set2  "se  keep(belongschain interaction) nostar stats(N te m, fmt(%9.0g %9.3f %9.3f)) " // 
-
-esttab reg1* using $pathfold/_tables/e7_tab_hhi.tex , replace b(3)  `set'	rename(`rname')  
-esttab reg2* using $pathfold/_tables/e7_tab_hhi.tex , append b(3) `set2'	rename(`rname2')  
-
-cap log close

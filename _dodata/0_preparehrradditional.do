@@ -47,7 +47,6 @@ order provider new_prov hospname year sysname pos_control
 sort provider  year
 rename provider providerid
 
-//3 hospitals have double entryes, drop 
 duplicates tag providerid year , gen(_dup) 
 bys provider _dup : g temp=_n
 drop if _dup==2 & temp!=1

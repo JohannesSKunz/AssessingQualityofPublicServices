@@ -1,4 +1,3 @@
-*** data downloaded 2016-11-05 from https://data.medicare.gov/data/archives/hospital-compare
 clear all 
 set more off 
 
@@ -6,8 +5,8 @@ set maxvar 32767
 set mat 11000
 version 14.1
 
-glo pathdata "/Users/jkun0001/Desktop/24_05_24_replicationpackage_all2/_dodata/_finaldata/" 
-glo pathfold "/Users/jkun0001/Desktop/24_05_24_replicationpackage_all2/" 
+glo pathdata "/Users/jkun0001/Downloads/AssessingQualityofPublicServices-main/_dodata/_finaldata/" 
+glo pathfold "/Users/jkun0001/Downloads/AssessingQualityofPublicServices-main/" 
 
 glo covars	"numberofdischarges totnumdicarges_other_leaveout beds DischargesforAmbulatoryCareS openingnrhosphrr closingnrhosphrr allagesinpovertypercent medhhincome10Tdollars totalpopestby100T unemprate "
 glo fes 	"_Iyear_2012 _Iyear_2013 _Iyear_2014 _Iyear_2015 _Imeasure_2 _Imeasure_3"
